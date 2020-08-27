@@ -1,0 +1,175 @@
+SQL> show user
+USER is "USER0827"
+SQL> grant create session to system;
+grant create session to system
+*
+ERROR at line 1:
+ORA-01031: insufficient privileges 
+
+
+SQL> --3번 문제
+SQL> create tablespace web
+  2  datafile 'C:\oraclexe\app\oracle\oradata\XE\web.dbf'
+  3  size 1M;
+create tablespace web
+*
+ERROR at line 1:
+ORA-01031: insufficient privileges 
+
+
+SQL> show user
+USER is "USER0827"
+SQL> conn system/1234
+Connected.
+SQL> create tablespace web
+  2  datafile 'C:\oraclexe\app\oracle\oradata\XE\web.dbf'
+  3  size 1M;
+
+Tablespace created.
+
+SQL> create tablespace web
+  2  datafile 'C:\oraclexe\app\oracle\oradata\XE\web.dbf'
+  3  size 10M;
+create tablespace web
+*
+ERROR at line 1:
+ORA-01543: tablespace 'WEB' already exists 
+
+
+SQL> create user java
+  2  identified by 1234
+  3  default tablespace web
+  4  quota unlimited on study;
+
+User created.
+
+SQL> show user
+USER is "SYSTEM"
+SQL> grant create session to user java ;
+grant create session to user java 
+                        *
+ERROR at line 1:
+ORA-00987: missing or invalid username(s) 
+
+
+SQL> grant create session to java ;
+
+Grant succeeded.
+
+SQL> conn java/1234
+Connected.
+SQL> show user
+USER is "JAVA"
+SQL> --2번문제  system 비밀번호 변경하기
+SQL> conn sys/as sysdba
+Connected.
+SQL> -- 존재의 변경은 alter로 한다
+SQL> alter user system
+  2  identified by manager ;
+
+User altered.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  alter user system
+  2* identified by manager 
+SQL> --바뀐 비번으로 접속하기
+SQL> conn system/manager
+Connected.
+SQL> --3번문제 풀이
+SQL> ed
+Wrote file afiedt.buf
+
+  1  create tablespace app
+  2  datafile ' C:\oraclexe\app\oracle\oradata\XE\app.dbf'
+  3* size 10M
+SQL> /
+create tablespace app
+*
+ERROR at line 1:
+ORA-01119: error in creating database file '
+C:\oraclexe\app\oracle\oradata\XE\app.dbf'
+ORA-27040: file create error, unable to create file
+OSD-04002: unable to open file
+O/S-Error: (OS 123) ？?？?？?, ?？？? ?？? ?？？????
+???？？????？?？??？????？？ 
+
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  create user dev
+  2  identified by 1234 
+  3  default tablespace web
+  4* quota unlimited on web
+SQL> ed
+Wrote file afiedt.buf
+
+  1* grant create session, create table to dev 
+SQL> conn dev/1234
+ERROR:
+ORA-01017: invalid username/password; logon denied 
+
+
+Warning: You are no longer connected to ORACLE.
+SQL> show user
+USER is ""
+SQL> conn web/1234
+ERROR:
+ORA-01017: invalid username/password; logon denied 
+
+
+SQL> conn system/manager
+Connected.
+SQL> vreate table member(
+SP2-0734: unknown command beginning "vreate tab..." - rest of line ignored.
+SQL> name var char()
+SP2-0734: unknown command beginning "name var c..." - rest of line ignored.
+SQL> create table member(
+  2  name barchar(20)
+  3  name barchar(20)
+  4  
+SQL> 
+SQL> create table member(
+  2  name varchar(20)
+  3  money number
+  4  phone varchar(13)
+  5  );
+money number
+*
+ERROR at line 3:
+ORA-00907: missing right parenthesis 
+
+
+SQL> create table member(
+  2  name varchar(20)
+  3  ,money number
+  4  ,phone varchar(13)
+  5  );
+
+Table created.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  insert into member(name, money, phone)
+  2* values('p', 3000,'010-2222-2222')
+SQL> /
+
+1 row created.
+
+SQL> commit
+  2  commit'
+  3  commit';
+commit'
+*
+ERROR at line 2:
+ORA-02185: a token other than WORK follows COMMIT 
+
+
+SQL> commit;
+
+Commit complete.
+
+SQL> spool off

@@ -1,0 +1,54 @@
+SQL> -- sys 계정은은 최상위 권한자 이므로, 중요한 업무를
+SQL> -- 다룰때 사용하므로,  개발자가 사용할 일이
+SQL> -- 없다. 따라서 sys보다 하위에 관리자 계정인
+SQL> --system 계정을 사용해서 실습하자
+SQL> -- 다른계정으로 로그인을 전환하려면 connect
+SQL> connect system/1234
+Connected.
+SQL> -- 현재 잘 들어온건지 확인해보자 show user
+SQL> show user
+USER is "SYSTEM"
+SQL> -- 앞으로 테이블을 저장할 데이터 베이스 와 파일을 생성해보자
+SQL> -- 데이터베이이스 생성 명령어
+SQL> create tablespace study
+  2  datafile 'C:\oraclexe\app\oracle\oradata\XE\study.dbf'
+  3  size 1M;
+
+Tablespace created.
+
+SQL> ed
+Wrote file afiedt.buf
+
+  1  create  user user0827
+  2  identified by user0827
+  3  default tablespace study
+  4* quota unlimited on study 
+SQL> 
+SQL> /
+
+User created.
+
+SQL> -- 유저가 생성되었으면, 이 유저로 로그인해보자
+SQL> conn user0827/user0827
+ERROR:
+ORA-01045: user USER0827 lacks CREATE SESSION privilege; logon denied 
+
+
+Warning: You are no longer connected to ORACLE.
+SQL> -- 생성된 유저는 아무런 권한이 없으므로 필요한 권한을 부여 받아야 한다. (sys에게..)
+SQL> show user
+USER is ""
+SQL> conn system/1234
+Connected.
+SQL> show user
+USER is "SYSTEM"
+SQL> -- 사용자에게 권한을 주자
+SQL> grant create session to user0827 ;
+
+Grant succeeded.
+
+SQL> conn user0827/user0827
+Connected.
+SQL> show user
+USER is "USER0827"
+SQL> spool off
