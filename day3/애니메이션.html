@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>Document</title>
+<style >
+#box{
+	width : 100px;
+	height : 100px;
+	background : red;
+	position : absolute;/*부모 요소를 기준으로 나의 위치를 결정하는 방법: body를 기준으로 */
+	left :0px;
+	top : 100px;
+	border-radius : 20px;
+
+	animation-name: aniBg;	/*이 CSS가 사용하게 될 애니메이션 프레임 이름*/
+	animation-duration :1s; /*애니메이션 변화시간*/
+	animation-iteration-count : infinite; /*반복 횟수*/
+	animation-direction : alternate;/*반복 방식을 번갈아 가면서 하도록 : 되돌아감*/
+}
+
+/*애니메이션 프레임 정의*/
+@keyframes aniBg{
+	from{
+		
+		}
+	to{
+	
+	left : 200px;
+	top: 300px;
+	}
+}
+
+
+
+
+</style>
+</head>
+<body>
+<pre>
+
+</pre>
+
+<div  id = "box"></div>
+
+
+</body>
+</html>
