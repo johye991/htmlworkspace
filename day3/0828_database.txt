@@ -1,0 +1,242 @@
+어제오라클 실습 admin
+
+1. Table을 저장하기 위해서는 먼저 데이터베이스 파일을 존재시켜야 한다
+	create tablespace 테이블스페이스명
+	detatile '저장 위치/파일명.dbf' size용량m
+
+2. 위에서 만든 데이터베이스를 사용할 유저 생성(DDL)
+	create user 유저명
+	identifies by 비번
+	default tablespace  테이블스페이스 명
+	quota unlimited on 대상스페이스명;
+
+3. 권한 부여하기(DCL)
+	grant create session, create table to 대상유저;
+------------------------------------------------------------------------------------------------------------------------------
+Maria db
+1.  mysql 접속 
+	mysql.exe.파일이 존재하는 곳으로 이동한다.	cd C:\MariaDB 10.3\bin
+						mysql -h localhost -u root -p
+						password :1234
+
+2.database 생성
+	create database 데이터베이스명;  =>create database app;
+
+3. user 생성
+	create user '유저명'@'localhost' identified by '1234'	;
+	=> create user 'dev'@'localhost' identified by '1234';(비밀번호)
+
+4.user권한주기
+	grant all privileges on 대상db*to '유저명'@'localhost'
+	=> grant all privileges on app.* to 'dev'@'localhost';
+
+5. 권한 갱신
+	flush privileges; 
+
+6. 접속
+	현재 접속을 끊고 원하는 유저로 다시 접속
+	quit
+	mysql -u 유저명 -p
+	비번입력
+	show databases;
+
+
+7. 실습 
+	db : android
+	유저명 : pub
+	비번 1234
+-----------------------------------------------------------------------------------------------------------
+sample data
+어떤 회사의 사원정보와 부서정보를 샘플로 공부안(오라클에서 제공)
+쿼리 스크립트 가져오기 --> http://blog.naver.com/zino1187
+
+--------------------------------------------------------------
+Mysql - mariadb
+-- 기존 테이블 삭제
+--------------------------------------------------------------
+drop table dept;
+drop table emp;
+--------------------------------------------------------------
+-- 부서 테이블 생성/레코드 넣기
+--------------------------------------------------------------
+create table dept(
+deptno int primary key auto_increment
+,dname varchar(14)
+,loc varchar(13)
+);
+insert into dept(deptno,dname,loc) values(10,'ACCOUNTING','NEW YORK');
+insert into dept(deptno,dname,loc) values(20,'RESEARCH','DALLAS');
+insert into dept(deptno,dname,loc) values(30,'SALES','CHICAGO');
+insert into dept(deptno,dname,loc) values(40,'OPERATIONS','BOSTON');
+--------------------------------------------------------------
+-- 사원 테이블 생성/레코드 넣기
+--------------------------------------------------------------
+create table emp(
+empno int primary key auto_increment
+,ename varchar(10)     
+,job varchar(9)         
+,mgr int
+,hiredate timestamp
+,sal int
+,comm int
+,deptno int
+);
+insert into emp(empno,ename,job,mgr,hiredate,sal,deptno) values(7369,'SMITH','CLERK',7902,'80/12/17',800,20);
+insert into emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) values(7499,'ALLEN','SALESMAN',7698,'81/02/20',1600,300,30);
+insert into emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) values(7521,'WARD','SALESMAN',7698,'81/02/22',1250,500,30);
+insert into emp(empno,ename,job,mgr,hiredate,sal,deptno) values(7566,'JONES','MANAGER',7839,'81/04/02',2975,20);
+insert into emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) values(7654,'MARTIN','SALESMAN',7698,'81/09/28',1250,1400,30);
+insert into emp(empno,ename,job,mgr,hiredate,sal,deptno) values(7698,'BLAKE','MANAGER',7839,'81/05/01',2850,30);
+insert into emp(empno,ename,job,mgr,hiredate,sal,deptno) values(7782,'CLARK','MANAGER',7839,'81/06/09',2450,10);
+insert into emp(empno,ename,job,mgr,hiredate,sal,deptno) values(7788,'SCOTT','ANALYST',7566,'87/04/19',3000,20);
+insert into emp(empno,ename,job,hiredate,sal,deptno) values(7839,'KING','PRESIDENT','81/11/17',5000,10);
+insert into emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) values(7844,'TURNER','SALESMAN',7698,'81/09/08',1500,0,30);
+insert into emp(empno,ename,job,mgr,hiredate,sal,deptno) values(7876,'ADAMS','CLERK',7788,'87/05/23',1100,20);
+insert into emp(empno,ename,job,mgr,hiredate,sal,deptno) values(7900,'JAMES','CLERK',7698,'81/12/03',950,30);
+insert into emp(empno,ename,job,mgr,hiredate,sal,deptno) values(7902,'FORD','ANALYST',7566,'81/12/03',3000,20);
+insert into emp(empno,ename,job,mgr,hiredate,sal,deptno) values(7934,'MILLER','CLERK',7782,'82/01/23',1300,10);
+
+MariaDB [android]> select * from dept;
++--------+------------+----------+
+| deptno | dname      | loc      |
++--------+------------+----------+
+|     10 | ACCOUNTING | NEW YORK |
+|     20 | RESEARCH   | DALLAS   |
+|     30 | SALES      | CHICAGO  |
+|     40 | OPERATIONS | BOSTON   |
++--------+------------+----------+
+4 rows in set (0.000 sec)
+
+MariaDB [android]> select * from emp;
++-------+--------+-----------+------+---------------------+------+------+--------+
+| empno | ename  | job       | mgr  | hiredate            | sal  | comm | deptno |
++-------+--------+-----------+------+---------------------+------+------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 00:00:00 |  800 | NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 00:00:00 | 1600 |  300 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 00:00:00 | 1250 |  500 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 00:00:00 | 2975 | NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 00:00:00 | 1250 | 1400 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 00:00:00 | 2850 | NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 00:00:00 | 2450 | NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1987-04-19 00:00:00 | 3000 | NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 00:00:00 | 5000 | NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 00:00:00 | 1500 |    0 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1987-05-23 00:00:00 | 1100 | NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 00:00:00 |  950 | NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 00:00:00 | 3000 | NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 00:00:00 | 1300 | NULL |     10 |
++-------+--------+-----------+------+---------------------+------+------+--------+
+14 rows in set (0.000 sec)
+
+실습
+
+1. 사원의 이름 급여를 출력하시오
+	select ename , sal from emp;
+
+2. 사원의 이름 급여 입사일을 출력하되 급여에 대해 오름차순으로 정렬하여 출력하시오(급여를 적게 받는 사람부터)
+	select ename , sal, hiredate from emp
+	order by  sal asc;(오름차순 <> 내림차순  desc)
+
+3. 조건을 추가하여 질의하기
+	- 급여가 3000미만인 사원의 이름, 급여를 출력하시오
+	select ename , sal from emp
+	where sal  < 3000; 미만
+	where sal >= 3000; 이상
+
+4. 30번 부서에서 근무하는 사원의 이름, 부서번호, 입사일을 출력하시오
+	select ename, deptno, hiredate
+	form emp
+	where deptno = 30;	
+
+5. 집계함수(무언가를 대상으로 집계, 통계를 위해 지원되는 함수를 의미)
+함수란? 	호출하면 코드가 동작하여  원하는 결과를 수행하는 코드 집합
+	따라서 개발자는 원하는 함수의 이름을 호출하면 됨
+	모든 함수는 함수명() 형태로 정의되어 있다.
+
+합을 구할 때 sum()이용
+	select sum(sal) as 급여합 from emp; // 급여합 
+
+MariaDB [android]> select sum(sal) as 급여합 from emp;
++--------+
+| 급여합 |
++--------+
+|  29025 |
++--------+
+
+평균 avg()
+최대값 max()
+최소값 min()
+
+사원 수를 구하시오
+	select count(컬럼명이 합이 맞을 경우 아무거나일때 *) as 사원수 from emp;
+
+
+-----------------------------------------------------------------------------------------------------------
+ 
+--------------------------------------------------------------
+Oracle 용
+-- 부서 테이블 생성/레코드 넣기
+--------------------------------------------------------------
+create table dept(
+deptno number 
+,dname varchar2(14)
+,loc varchar2(13)
+,primary key(deptno)
+);
+--------------------------------------------------------------
+-- 사원 테이블 생성/레코드 넣기
+--------------------------------------------------------------
+create table emp(
+empno number 
+,ename varchar2(10)     
+,job varchar2(9)         
+,mgr number
+,hiredate date
+,sal number
+,comm number
+,deptno number
+,primary key(empno)
+);
+ 
+insert into dept(deptno,dname,loc) values(10,'ACCOUNTING','NEW YORK');
+insert into dept(deptno,dname,loc) values(20,'RESEARCH','DALLAS');
+insert into dept(deptno,dname,loc) values(30,'SALES','CHICAGO');
+insert into dept(deptno,dname,loc) values(40,'OPERATIONS','BOSTON');
+ 
+insert into emp(empno,ename,job,mgr,hiredate,sal,deptno) values(7369,'SMITH','CLERK',7902,'80/12/17',800,20);
+insert into emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) values(7499,'ALLEN','SALESMAN',7698,'81/02/20',1600,300,30);
+insert into emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) values(7521,'WARD','SALESMAN',7698,'81/02/22',1250,500,30);
+insert into emp(empno,ename,job,mgr,hiredate,sal,deptno) values(7566,'JONES','MANAGER',7839,'81/04/02',2975,20);
+insert into emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) values(7654,'MARTIN','SALESMAN',7698,'81/09/28',1250,1400,30);
+insert into emp(empno,ename,job,mgr,hiredate,sal,deptno) values(7698,'BLAKE','MANAGER',7839,'81/05/01',2850,30);
+insert into emp(empno,ename,job,mgr,hiredate,sal,deptno) values(7782,'CLARK','MANAGER',7839,'81/06/09',2450,10);
+insert into emp(empno,ename,job,mgr,hiredate,sal,deptno) values(7788,'SCOTT','ANALYST',7566,'87/04/19',3000,20);
+insert into emp(empno,ename,job,hiredate,sal,deptno) values(7839,'KING','PRESIDENT','81/11/17',5000,10);
+insert into emp(empno,ename,job,mgr,hiredate,sal,comm,deptno) values(7844,'TURNER','SALESMAN',7698,'81/09/08',1500,0,30);
+insert into emp(empno,ename,job,mgr,hiredate,sal,deptno) values(7876,'ADAMS','CLERK',7788,'87/05/23',1100,20);
+insert into emp(empno,ename,job,mgr,hiredate,sal,deptno) values(7900,'JAMES','CLERK',7698,'81/12/03',950,30);
+insert into emp(empno,ename,job,mgr,hiredate,sal,deptno) values(7902,'FORD','ANALYST',7566,'81/12/03',3000,20);
+insert into emp(empno,ename,job,mgr,hiredate,sal,deptno) values(7934,'MILLER','CLERK',7782,'82/01/23',1300,10); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------
